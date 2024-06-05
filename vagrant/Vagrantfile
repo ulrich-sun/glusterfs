@@ -1,0 +1,31 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+    config.vm.define "linux" do |linux|
+      linux.vm.box = "ubuntu/focal64"
+      linux.vm.network "private_network", type: "static", ip: "192.168.99.10"
+      linux.vm.hostname = "linux"
+      linux.vm.provider "virtualbox" do |v|
+        v.name = "linux"
+        v.memory = 4096
+        v.cpus = 2
+      end
+    end
+    glusterfs=2
+    ram_glusterfs=2048
+    cpu_glusterfs=2
+    (1..glusterfs).each do |i|
+      config.vm.define "glusterfs#{i}" do |glusterfs|
+        glusterfs.vm.box = "ubuntu/focal64"
+        glusterfs.vm.network "private_network", type: "static", ip: "192.168.99.1#{i}"
+        glusterfs.vm.hostname = "glusterfs#{i}"
+        glusterfs.vm.provider "virtualbox" do |v|
+          v.name = "glusterfs#{i}"
+          v.memory = ram_glusterfs
+          v.cpus = cpu_glusterfs
+        end
+      end
+    end
+  end
+  
